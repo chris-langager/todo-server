@@ -1,0 +1,55 @@
+{
+  "name": "todo-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "gql-gen",
+    "generate:client": "apollo-client-codegen generate:serviceFactory --server=http://localhost:5000/graphql --includes=./src/**/*.gql --outputDir=./src/tests/gql/generated",
+    "build": "tsc",
+    "start": "node ./build/index.js",
+    "pretest": "bash ./pretest.sh",
+    "test": "jest --testTimeout=30000 --watchAll",
+    "posttest": "bash ./posttest.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@graphql-codegen/cli": "^1.6.1",
+    "@graphql-codegen/typescript-resolvers": "^1.6.1",
+    "@types/express": "^4.17.0",
+    "@types/graphql": "^14.2.0",
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.0.7",
+    "@types/pg": "^7.4.14",
+    "@types/pino": "^5.8.13",
+    "@types/sinon": "^7.5.1",
+    "@types/uuid": "^3.4.4",
+    "jest": "^24.9.0",
+    "pino-pretty": "^3.3.0",
+    "ts-jest": "^24.2.0",
+    "ts-node": "^8.4.1",
+    "typescript": "3.6.4"
+  },
+  "dependencies": {
+    "apollo-boost": "^0.4.4",
+    "apollo-client-codegen": "^0.2.0",
+    "apollo-server-express": "^2.6.3",
+    "cors": "^2.8.5",
+    "dataloader": "^1.4.0",
+    "date-fns": "^1.30.1",
+    "db-migrate": "^0.11.6",
+    "db-migrate-pg": "^1.0.0",
+    "express": "^4.17.1",
+    "graphql": "^14.3.1",
+    "node-fetch": "^2.6.0",
+    "pg-promise": "^8.7.4",
+    "pino": "^5.13.6",
+    "sinon": "^7.5.0",
+    "uuid": "^3.3.2"
+  },
+  "prettier": {
+    "singleQuote": true
+  }
+}

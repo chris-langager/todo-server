@@ -1,0 +1,10 @@
+schema:
+  - ./graphql/*.graphql
+overwrite: true
+generates:
+  ./src/GraphQL/generated/resolvers.ts:
+    config:
+      mappers:
+    plugins:
+      - typescript
+      - typescript-resolvers
