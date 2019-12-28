@@ -4,3 +4,9 @@ export interface User {
   dateUpdated: Date;
   email: string;
 }
+
+export interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}

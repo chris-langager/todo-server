@@ -12,9 +12,7 @@ export function createUserAccessToken(claims: Claims) {
 
 export function validateUserAccessToken(token: string): Claims {
   try {
-    const ret = jwt.verify(token, CONFIG.TOKEN_SECRET) as Claims;
-    console.log({ ret });
-    return ret;
+    return jwt.verify(token, CONFIG.TOKEN_SECRET) as Claims;
   } catch (e) {
     //TODO: throw structurd error based on token error
     throw e;

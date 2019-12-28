@@ -4,32 +4,34 @@ import Service from '../Service';
 
 export const resolvers: Resolvers<GraphqlContext> = {
   Query: {
-    test: () => 'hi there'
+    todos: async (_, args, ctx) => {
+      const { todos } = await Service.listTodos(ctx, {});
+      return todos;
+    },
   },
   Mutation: {
     createUser: async (_, args, ctx) => {
       return Service.createUser(ctx, {
-        createUserInput: {
-          ...args.input
-        }
+        createUserInput: args.input,
       });
     },
     loginUser: async (_, args, ctx) => {
       return Service.loginUser(ctx, {
-        loginUserInput: {
-          ...args.input
-        }
+        loginUserInput: args.input,
       });
-    }
-  }
+    },
+    upsertTodos: async (_, args, ctx) => {
+      return Service.upsertTodos(ctx, {
+        upsertTodoInputs: args.input.upsertTodoInputs,
+      });
+    },
+  },
 };
 
 //helper to take our domain types that have cursors on them and convert them to GQL "edges"
-function toEdges<T extends { cursor?: string }>(
-  tt: T[]
-): { node: T; cursor?: string }[] {
+function toEdges<T extends { cursor?: string }>(tt: T[]): { node: T; cursor?: string }[] {
   return tt.map(t => ({
     node: t,
-    cursor: t.cursor
+    cursor: t.cursor,
   }));
 }

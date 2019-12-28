@@ -2,3 +2,10 @@ type User {
   id: ID!
   email: String!
 }
+
+type Todo {
+  id: ID!
+  text: String!
+  completed: Boolean!
+  history: [String!]!
+}

@@ -1,6 +1,8 @@
 type Mutation {
   createUser(input: CreateUserInput!): CreateUserOutput!
   loginUser(input: LoginUserInput!): LoginUserOutput!
+
+  upsertTodos(input: UpsertTodosInput!): UpsertTodosOutput!
 }
 
 input CreateUserInput {
@@ -20,4 +22,19 @@ input LoginUserInput {
 type LoginUserOutput {
   user: User!
   accessToken: String!
+}
+
+
+input UpsertTodosInput {
+  upsertTodoInputs: [UpsertTodoInput!]!
+}
+
+input UpsertTodoInput {
+  id: String
+  text: String!
+  completed: Boolean!
+}
+
+type UpsertTodosOutput {
+  _: Boolean
 }
