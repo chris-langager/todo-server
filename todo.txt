@@ -17,6 +17,8 @@ TODO:
 
 
 
+
+
 CONSIDER:
 - group things by type rather than by layer?
 - What is the relationship between Todo and TodoAggregate?
