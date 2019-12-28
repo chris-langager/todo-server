@@ -1,0 +1,22 @@
+TODO:
+- add structured errors
+- add tests
+- add users->todo and todo->user in types.graphql
+- add boards (collection of Todos)
+- add expiration to userAccessToken
+    - when it's expired, try to use existing one to refresh
+    - this should only work if
+        - the password has been unchanged
+        - the user has not "logged out of everywhere"
+    - need to add a hash of password to token and something else to detect above
+- add "change password"
+- add "I forgot my username/password" flow
+- add SSO
+- host on Heroku
+
+
+
+
+CONSIDER:
+- group things by type rather than by layer?
+- What is the relationship between Todo and TodoAggregate?
