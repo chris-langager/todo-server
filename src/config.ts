@@ -3,5 +3,6 @@ export const CONFIG = {
   RUN_PORT: process.env.RUN_PORT || '5000',
   POSTGRES_DATABASE_URL:
     process.env.POSTGRES_DATABASE_URL ||
-    'postgres://postgres:passw0rd@localhost:5432/postgres'
+    'postgres://postgres:passw0rd@localhost:5432/postgres',
+  TOKEN_SECRET: process.env.TOKEN_SECRET || 'boggle'
 };

@@ -1,8 +1,9 @@
 import { CoreFunction } from '../lib/Core';
-import * as uuid from 'uuid';
+import { pick } from 'lodash';
 import { User } from '../types';
 import { Context } from '../context';
 import Store from '../Store';
+import { createUserAccessToken } from '../tokens';
 
 export interface Input {
   loginUserInput: LoginUserInput;
@@ -32,6 +33,6 @@ export const loginUser: CoreFunction<Context, Input, Output> = async (
 
   return {
     user,
-    accessToken: 'asdf'
+    accessToken: createUserAccessToken(pick(user, 'id', 'email'))
   };
 };
