@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["es2017", "dom"],
     "moduleResolution": "node",
-    "strict": true,
+    "strict": false,
     "rootDir": "./src",
     "outDir": "./build",
     "noImplicitAny": false,

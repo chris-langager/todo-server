@@ -1,3 +1,23 @@
 type Mutation {
-  something(input: String): String
+  createUser(input: CreateUserInput!): CreateUserOutput!
+  loginUser(input: LoginUserInput!): LoginUserOutput!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+type CreateUserOutput {
+  user: User!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type LoginUserOutput {
+  user: User!
+  accessToken: String!
 }

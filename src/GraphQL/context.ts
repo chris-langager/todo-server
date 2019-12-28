@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request } from 'express';
 
 export type GraphqlContext = ReturnType<typeof context>;
 
@@ -6,10 +6,10 @@ export function context({ req }: { req: Request }) {
   /*
   token
   */
-  const token = req.headers["x-token"]
-    ? req.headers["x-token"]
+  const token: string = req.headers['x-token']
+    ? req.headers['x-token']
     : req.cookies
-    ? req.cookies["accessToken"]
+    ? req.cookies['accessToken']
     : undefined;
 
   //base context that we'll be passing to dataloader factory functions

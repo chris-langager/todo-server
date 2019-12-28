@@ -9,19 +9,12 @@ import * as bodyParser from 'body-parser';
 (async () => {
   logger.info({ ENV: CONFIG }, 'starting up!');
 
-  //   await Store.migrate();
+  await Store.migrate();
 
   const app = express();
 
   app.use(cors());
   app.use(bodyParser.json());
-
-  app.use('/healthy', async (req, res) => {
-    res.send({
-      message: 'we up'
-    });
-  });
-
   server.applyMiddleware({ app, path: '/graphql' });
 
   app.listen({ port: CONFIG.RUN_PORT }, () => {

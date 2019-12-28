@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 export type Maybe<T> = T | null;
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string,
@@ -9,14 +10,41 @@ export type Scalars = {
   Float: number,
 };
 
+export type CreateUserInput = {
+  email: Scalars['String'],
+  password: Scalars['String'],
+};
+
+export type CreateUserOutput = {
+   __typename?: 'CreateUserOutput',
+  user: User,
+};
+
+export type LoginUserInput = {
+  email: Scalars['String'],
+  password: Scalars['String'],
+};
+
+export type LoginUserOutput = {
+   __typename?: 'LoginUserOutput',
+  user: User,
+  accessToken: Scalars['String'],
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
-  something?: Maybe<Scalars['String']>,
+  createUser: CreateUserOutput,
+  loginUser: LoginUserOutput,
 };
 
 
-export type MutationSomethingArgs = {
-  input?: Maybe<Scalars['String']>
+export type MutationCreateUserArgs = {
+  input: CreateUserInput
+};
+
+
+export type MutationLoginUserArgs = {
+  input: LoginUserInput
 };
 
 export type Query = {
@@ -27,6 +55,7 @@ export type Query = {
 export type User = {
    __typename?: 'User',
   id: Scalars['ID'],
+  email: Scalars['String'],
 };
 
 
@@ -103,9 +132,13 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>,
   String: ResolverTypeWrapper<Scalars['String']>,
   Mutation: ResolverTypeWrapper<{}>,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  CreateUserInput: CreateUserInput,
+  CreateUserOutput: ResolverTypeWrapper<CreateUserOutput>,
   User: ResolverTypeWrapper<User>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
+  LoginUserInput: LoginUserInput,
+  LoginUserOutput: ResolverTypeWrapper<LoginUserOutput>,
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -113,13 +146,27 @@ export type ResolversParentTypes = {
   Query: {},
   String: Scalars['String'],
   Mutation: {},
-  Boolean: Scalars['Boolean'],
+  CreateUserInput: CreateUserInput,
+  CreateUserOutput: CreateUserOutput,
   User: User,
   ID: Scalars['ID'],
+  LoginUserInput: LoginUserInput,
+  LoginUserOutput: LoginUserOutput,
+  Boolean: Scalars['Boolean'],
+};
+
+export type CreateUserOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateUserOutput'] = ResolversParentTypes['CreateUserOutput']> = {
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+};
+
+export type LoginUserOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginUserOutput'] = ResolversParentTypes['LoginUserOutput']> = {
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  something?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, MutationSomethingArgs>,
+  createUser?: Resolver<ResolversTypes['CreateUserOutput'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
+  loginUser?: Resolver<ResolversTypes['LoginUserOutput'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'input'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -128,9 +175,12 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type Resolvers<ContextType = any> = {
+  CreateUserOutput?: CreateUserOutputResolvers<ContextType>,
+  LoginUserOutput?: LoginUserOutputResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
