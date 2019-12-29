@@ -8,7 +8,7 @@ export async function migrate() {
       stdio: 'inherit',
       env: {
         ...process.env,
-        DATABASE_URL: CONFIG.POSTGRES_DATABASE_URL,
+        DATABASE_URL: CONFIG.DATABASE_URL,
       },
     });
   } catch (e) {
