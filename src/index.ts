@@ -17,7 +17,7 @@ import * as bodyParser from 'body-parser';
   app.use(bodyParser.json());
   server.applyMiddleware({ app, path: '/graphql' });
 
-  app.listen({ port: CONFIG.RUN_PORT }, () => {
-    logger.info(`pos-config-gql listening at :${CONFIG.RUN_PORT}...`);
+  app.listen({ port: CONFIG.PORT }, () => {
+    logger.info(`pos-config-gql listening at :${CONFIG.PORT}...`);
   });
 })();
