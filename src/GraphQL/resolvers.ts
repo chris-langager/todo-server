@@ -8,6 +8,26 @@ export const resolvers: Resolvers<GraphqlContext> = {
       const { todos } = await Service.listTodos(ctx, {});
       return todos;
     },
+    test: async () => {
+      console.log('test resolver called');
+      return {
+        // a: 'this is from test',
+        b: 'this is from test',
+      };
+    },
+  },
+  Test: {
+    a: async test => {
+      if (test.a) {
+        return test.a;
+      }
+      console.log('a resolver called');
+      return 'this is from a';
+    },
+    b: async test => {
+      console.log('b resolver called');
+      return 'this is from b';
+    },
   },
   Mutation: {
     createUser: async (_, args, ctx) => {

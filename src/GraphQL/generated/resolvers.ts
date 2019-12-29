@@ -56,6 +56,13 @@ export type MutationUpsertTodosArgs = {
 export type Query = {
    __typename?: 'Query',
   todos: Array<Todo>,
+  test?: Maybe<Test>,
+};
+
+export type Test = {
+   __typename?: 'Test',
+  a?: Maybe<Scalars['String']>,
+  b?: Maybe<Scalars['String']>,
 };
 
 export type Todo = {
@@ -163,6 +170,7 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>,
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  Test: ResolverTypeWrapper<Test>,
   Mutation: ResolverTypeWrapper<{}>,
   CreateUserInput: CreateUserInput,
   CreateUserOutput: ResolverTypeWrapper<CreateUserOutput>,
@@ -181,6 +189,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'],
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
+  Test: Test,
   Mutation: {},
   CreateUserInput: CreateUserInput,
   CreateUserOutput: CreateUserOutput,
@@ -209,6 +218,12 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   todos?: Resolver<Array<ResolversTypes['Todo']>, ParentType, ContextType>,
+  test?: Resolver<Maybe<ResolversTypes['Test']>, ParentType, ContextType>,
+};
+
+export type TestResolvers<ContextType = any, ParentType extends ResolversParentTypes['Test'] = ResolversParentTypes['Test']> = {
+  a?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  b?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
 export type TodoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Todo'] = ResolversParentTypes['Todo']> = {
@@ -232,6 +247,7 @@ export type Resolvers<ContextType = any> = {
   LoginUserOutput?: LoginUserOutputResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
+  Test?: TestResolvers<ContextType>,
   Todo?: TodoResolvers<ContextType>,
   UpsertTodosOutput?: UpsertTodosOutputResolvers<ContextType>,
   User?: UserResolvers<ContextType>,

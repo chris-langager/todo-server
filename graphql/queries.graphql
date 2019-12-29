@@ -1,3 +1,10 @@
 type Query {
   todos: [Todo!]!
+
+  test: Test
+}
+
+type Test {
+  a: String
+  b: String
 }
