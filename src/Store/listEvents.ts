@@ -1,5 +1,5 @@
 import { db } from './db';
-import { Event, AggregateType } from '../Events';
+import { Event, AggregateType } from '../events';
 import { Context } from '../context';
 import { last, first } from 'lodash';
 import { Filters, FilterMapping, buildWhereClause } from './where';
