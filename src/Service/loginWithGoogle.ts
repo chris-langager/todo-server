@@ -34,6 +34,8 @@ export const loginWithGoogle: CoreFunction<Context, Input, Output> = async (
   //if they don't we'll need to create them
   if (!user) {
     //Consider - password should probably be optional, but this works for now
+    //it also allows them to eventually use this account without google after
+    //going through reset password flow, so maybe it isn't the worst thing
     user = (await createUser(ctx, { email, password: uuid.v4() })).user;
   }
 
@@ -44,14 +46,6 @@ export const loginWithGoogle: CoreFunction<Context, Input, Output> = async (
 };
 
 async function getAccessTokenFromCode(code: string) {
-  console.log('getAccessTokenFromCode called.');
-
-  console.log('process.env.GOOGLE_CLIENT_ID');
-  console.log(process.env.GOOGLE_CLIENT_ID);
-  console.log('process.env.GOOGLE_CLIENT_SECRET');
-  console.log(process.env.GOOGLE_CLIENT_SECRET);
-
-  console.log('making request to https://oauth2.googleapis.com/token....');
   const { data } = await axios({
     url: `https://oauth2.googleapis.com/token`,
     method: 'post',
@@ -63,8 +57,6 @@ async function getAccessTokenFromCode(code: string) {
       code,
     },
   });
-  console.log('got a response back:');
-  console.log(data); // { access_token, expires_in, token_type, refresh_token }
   return data.access_token;
 }
 
@@ -76,7 +68,6 @@ async function getUserEmail(access_token: string): Promise<string> {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  console.log(data); // { id, email, given_name, family_name }
 
   if (!data.email) {
     throw new Error('email not on info from google');
