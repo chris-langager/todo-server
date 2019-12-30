@@ -7,7 +7,7 @@ import * as Store from './Store';
 import * as bodyParser from 'body-parser';
 
 (async () => {
-  logger.info({ ENV: CONFIG }, 'starting up!');
+  logger.info({ CONFIG }, 'starting up!');
 
   await Store.migrate();
 

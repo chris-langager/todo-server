@@ -2,6 +2,8 @@ type Mutation {
   createUser(input: CreateUserInput!): CreateUserOutput!
   loginUser(input: LoginUserInput!): LoginUserOutput!
 
+  loginWithGoogle(input: LoginWithGoogleInput!): LoginWithGoogleOutput!
+
   upsertTodos(input: UpsertTodosInput!): UpsertTodosOutput!
 }
 
@@ -24,6 +26,14 @@ type LoginUserOutput {
   accessToken: String!
 }
 
+input LoginWithGoogleInput {
+  #code is what you get back from the querystring when google redirects back to our app
+  code: String!
+}
+type LoginWithGoogleOutput {
+  user: User!
+  accessToken: String!
+}
 
 input UpsertTodosInput {
   upsertTodoInputs: [UpsertTodoInput!]!

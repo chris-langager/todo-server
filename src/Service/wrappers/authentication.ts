@@ -2,7 +2,7 @@ import { WrapperFunction } from '../../lib/Core';
 import { Context } from '../../context';
 import { validateUserAccessToken } from '../../tokens';
 
-const whiteList = ['createUser', 'loginUser'];
+const whiteList = ['createUser', 'loginUser', 'loginWithGoogle'];
 
 export const authentication: WrapperFunction<Context> = (ctx, input, next, metadata) => {
   const { coreFunctionName } = metadata;

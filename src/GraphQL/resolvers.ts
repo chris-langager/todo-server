@@ -31,14 +31,13 @@ export const resolvers: Resolvers<GraphqlContext> = {
   },
   Mutation: {
     createUser: async (_, args, ctx) => {
-      return Service.createUser(ctx, {
-        createUserInput: args.input,
-      });
+      return Service.createUser(ctx, args.input);
     },
     loginUser: async (_, args, ctx) => {
-      return Service.loginUser(ctx, {
-        loginUserInput: args.input,
-      });
+      return Service.loginUser(ctx, args.input);
+    },
+    loginWithGoogle: async (_, args, ctx) => {
+      return Service.loginWithGoogle(ctx, args.input);
     },
     upsertTodos: async (_, args, ctx) => {
       return Service.upsertTodos(ctx, {

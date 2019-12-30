@@ -3,6 +3,8 @@ export interface User {
   dateCreated: Date;
   dateUpdated: Date;
   email: string;
+
+  cursor?: string;
 }
 
 export interface Todo {

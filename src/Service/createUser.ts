@@ -5,10 +5,6 @@ import { Context } from '../context';
 import Store from '../Store';
 
 export interface Input {
-  createUserInput: CreateUserInput;
-}
-
-export interface CreateUserInput {
   email: string;
   password: string;
 }
@@ -17,17 +13,14 @@ export interface Output {
   user: User;
 }
 
-export const createUser: CoreFunction<Context, Input, Output> = async (
-  ctx,
-  input
-) => {
-  const { email, password } = input.createUserInput;
+export const createUser: CoreFunction<Context, Input, Output> = async (ctx, input) => {
+  const { email, password } = input;
   const now = new Date();
   const user = {
     id: uuid.v4(),
     dateCreated: now,
     dateUpdated: now,
-    email
+    email,
   };
 
   await Store.createUser(ctx, { user, password });

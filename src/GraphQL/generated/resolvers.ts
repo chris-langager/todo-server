@@ -31,10 +31,22 @@ export type LoginUserOutput = {
   accessToken: Scalars['String'],
 };
 
+export type LoginWithGoogleInput = {
+  /** code is what you get back from the querystring when google redirects back to our app */
+  code: Scalars['String'],
+};
+
+export type LoginWithGoogleOutput = {
+   __typename?: 'LoginWithGoogleOutput',
+  user: User,
+  accessToken: Scalars['String'],
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
   createUser: CreateUserOutput,
   loginUser: LoginUserOutput,
+  loginWithGoogle: LoginWithGoogleOutput,
   upsertTodos: UpsertTodosOutput,
 };
 
@@ -46,6 +58,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationLoginUserArgs = {
   input: LoginUserInput
+};
+
+
+export type MutationLoginWithGoogleArgs = {
+  input: LoginWithGoogleInput
 };
 
 
@@ -177,6 +194,8 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>,
   LoginUserInput: LoginUserInput,
   LoginUserOutput: ResolverTypeWrapper<LoginUserOutput>,
+  LoginWithGoogleInput: LoginWithGoogleInput,
+  LoginWithGoogleOutput: ResolverTypeWrapper<LoginWithGoogleOutput>,
   UpsertTodosInput: UpsertTodosInput,
   UpsertTodoInput: UpsertTodoInput,
   UpsertTodosOutput: ResolverTypeWrapper<UpsertTodosOutput>,
@@ -196,6 +215,8 @@ export type ResolversParentTypes = {
   User: User,
   LoginUserInput: LoginUserInput,
   LoginUserOutput: LoginUserOutput,
+  LoginWithGoogleInput: LoginWithGoogleInput,
+  LoginWithGoogleOutput: LoginWithGoogleOutput,
   UpsertTodosInput: UpsertTodosInput,
   UpsertTodoInput: UpsertTodoInput,
   UpsertTodosOutput: UpsertTodosOutput,
@@ -210,9 +231,15 @@ export type LoginUserOutputResolvers<ContextType = any, ParentType extends Resol
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
+export type LoginWithGoogleOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginWithGoogleOutput'] = ResolversParentTypes['LoginWithGoogleOutput']> = {
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['CreateUserOutput'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
   loginUser?: Resolver<ResolversTypes['LoginUserOutput'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'input'>>,
+  loginWithGoogle?: Resolver<ResolversTypes['LoginWithGoogleOutput'], ParentType, ContextType, RequireFields<MutationLoginWithGoogleArgs, 'input'>>,
   upsertTodos?: Resolver<ResolversTypes['UpsertTodosOutput'], ParentType, ContextType, RequireFields<MutationUpsertTodosArgs, 'input'>>,
 };
 
@@ -245,6 +272,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   CreateUserOutput?: CreateUserOutputResolvers<ContextType>,
   LoginUserOutput?: LoginUserOutputResolvers<ContextType>,
+  LoginWithGoogleOutput?: LoginWithGoogleOutputResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Test?: TestResolvers<ContextType>,

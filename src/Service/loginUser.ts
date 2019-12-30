@@ -6,10 +6,6 @@ import Store from '../Store';
 import { createUserAccessToken } from '../tokens';
 
 export interface Input {
-  loginUserInput: LoginUserInput;
-}
-
-export interface LoginUserInput {
   email: string;
   password: string;
 }
@@ -19,11 +15,8 @@ export interface Output {
   accessToken: string;
 }
 
-export const loginUser: CoreFunction<Context, Input, Output> = async (
-  ctx,
-  input
-) => {
-  const { email, password } = input.loginUserInput;
+export const loginUser: CoreFunction<Context, Input, Output> = async (ctx, input) => {
+  const { email, password } = input;
 
   const { user } = await Store.authenticateUser(ctx, { email, password });
 
@@ -33,6 +26,6 @@ export const loginUser: CoreFunction<Context, Input, Output> = async (
 
   return {
     user,
-    accessToken: createUserAccessToken(pick(user, 'id', 'email'))
+    accessToken: createUserAccessToken(pick(user, 'id', 'email')),
   };
 };
