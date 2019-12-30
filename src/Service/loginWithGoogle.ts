@@ -44,6 +44,14 @@ export const loginWithGoogle: CoreFunction<Context, Input, Output> = async (
 };
 
 async function getAccessTokenFromCode(code: string) {
+  console.log('getAccessTokenFromCode called.');
+
+  console.log('process.env.GOOGLE_CLIENT_ID');
+  console.log(process.env.GOOGLE_CLIENT_ID);
+  console.log('process.env.GOOGLE_CLIENT_SECRET');
+  console.log(process.env.GOOGLE_CLIENT_SECRET);
+
+  console.log('making request to https://oauth2.googleapis.com/token....');
   const { data } = await axios({
     url: `https://oauth2.googleapis.com/token`,
     method: 'post',
@@ -55,6 +63,7 @@ async function getAccessTokenFromCode(code: string) {
       code,
     },
   });
+  console.log('got a response back:');
   console.log(data); // { access_token, expires_in, token_type, refresh_token }
   return data.access_token;
 }
