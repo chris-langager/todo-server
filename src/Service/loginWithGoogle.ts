@@ -56,7 +56,7 @@ async function getAccessTokenFromCode(code: string) {
       //FIXME: redirect URI should not be hardcoded
       //if you can get this off of "code", do that
       //if not, then the client needs to pass it when it calls this service function
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      redirect_uri: `${process.env.FRONTEND_URL}/oauth/google`,
       grant_type: 'authorization_code',
       code,
     },
