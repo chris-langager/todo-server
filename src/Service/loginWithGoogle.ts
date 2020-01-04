@@ -52,6 +52,10 @@ async function getAccessTokenFromCode(code: string) {
     data: {
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
+
+      //FIXME: redirect URI should not be hardcoded
+      //if you can get this off of "code", do that
+      //if not, then the client needs to pass it when it calls this service function
       redirect_uri: process.env.GOOGLE_REDIRECT_URI,
       grant_type: 'authorization_code',
       code,

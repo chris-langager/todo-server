@@ -28,7 +28,6 @@ export type LoginUserInput = {
 export type LoginUserOutput = {
    __typename?: 'LoginUserOutput',
   user: User,
-  accessToken: Scalars['String'],
 };
 
 export type LoginWithGoogleInput = {
@@ -39,7 +38,6 @@ export type LoginWithGoogleInput = {
 export type LoginWithGoogleOutput = {
    __typename?: 'LoginWithGoogleOutput',
   user: User,
-  accessToken: Scalars['String'],
 };
 
 export type Mutation = {
@@ -47,6 +45,7 @@ export type Mutation = {
   createUser: CreateUserOutput,
   loginUser: LoginUserOutput,
   loginWithGoogle: LoginWithGoogleOutput,
+  logout?: Maybe<Scalars['Boolean']>,
   upsertTodos: UpsertTodosOutput,
 };
 
@@ -72,14 +71,8 @@ export type MutationUpsertTodosArgs = {
 
 export type Query = {
    __typename?: 'Query',
+  self?: Maybe<User>,
   todos: Array<Todo>,
-  test?: Maybe<Test>,
-};
-
-export type Test = {
-   __typename?: 'Test',
-  a?: Maybe<Scalars['String']>,
-  b?: Maybe<Scalars['String']>,
 };
 
 export type Todo = {
@@ -183,15 +176,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>,
-  Todo: ResolverTypeWrapper<Todo>,
+  User: ResolverTypeWrapper<User>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
   String: ResolverTypeWrapper<Scalars['String']>,
+  Todo: ResolverTypeWrapper<Todo>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  Test: ResolverTypeWrapper<Test>,
   Mutation: ResolverTypeWrapper<{}>,
   CreateUserInput: CreateUserInput,
   CreateUserOutput: ResolverTypeWrapper<CreateUserOutput>,
-  User: ResolverTypeWrapper<User>,
   LoginUserInput: LoginUserInput,
   LoginUserOutput: ResolverTypeWrapper<LoginUserOutput>,
   LoginWithGoogleInput: LoginWithGoogleInput,
@@ -204,15 +196,14 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {},
-  Todo: Todo,
+  User: User,
   ID: Scalars['ID'],
   String: Scalars['String'],
+  Todo: Todo,
   Boolean: Scalars['Boolean'],
-  Test: Test,
   Mutation: {},
   CreateUserInput: CreateUserInput,
   CreateUserOutput: CreateUserOutput,
-  User: User,
   LoginUserInput: LoginUserInput,
   LoginUserOutput: LoginUserOutput,
   LoginWithGoogleInput: LoginWithGoogleInput,
@@ -228,29 +219,23 @@ export type CreateUserOutputResolvers<ContextType = any, ParentType extends Reso
 
 export type LoginUserOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginUserOutput'] = ResolversParentTypes['LoginUserOutput']> = {
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
-  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type LoginWithGoogleOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginWithGoogleOutput'] = ResolversParentTypes['LoginWithGoogleOutput']> = {
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
-  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['CreateUserOutput'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
   loginUser?: Resolver<ResolversTypes['LoginUserOutput'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'input'>>,
   loginWithGoogle?: Resolver<ResolversTypes['LoginWithGoogleOutput'], ParentType, ContextType, RequireFields<MutationLoginWithGoogleArgs, 'input'>>,
+  logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
   upsertTodos?: Resolver<ResolversTypes['UpsertTodosOutput'], ParentType, ContextType, RequireFields<MutationUpsertTodosArgs, 'input'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   todos?: Resolver<Array<ResolversTypes['Todo']>, ParentType, ContextType>,
-  test?: Resolver<Maybe<ResolversTypes['Test']>, ParentType, ContextType>,
-};
-
-export type TestResolvers<ContextType = any, ParentType extends ResolversParentTypes['Test'] = ResolversParentTypes['Test']> = {
-  a?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  b?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 };
 
 export type TodoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Todo'] = ResolversParentTypes['Todo']> = {
@@ -275,7 +260,6 @@ export type Resolvers<ContextType = any> = {
   LoginWithGoogleOutput?: LoginWithGoogleOutputResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
-  Test?: TestResolvers<ContextType>,
   Todo?: TodoResolvers<ContextType>,
   UpsertTodosOutput?: UpsertTodosOutputResolvers<ContextType>,
   User?: UserResolvers<ContextType>,

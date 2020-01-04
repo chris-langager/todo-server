@@ -1,10 +1,4 @@
 type Query {
+  self: User
   todos: [Todo!]!
-
-  test: Test
-}
-
-type Test {
-  a: String
-  b: String
 }

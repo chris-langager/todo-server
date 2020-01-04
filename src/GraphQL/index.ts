@@ -5,9 +5,8 @@ import { typeDefs } from './typeDefs';
 
 export const server = new ApolloServer({
   typeDefs,
-  //@ts-ignore
   resolvers,
   context,
   introspection: true,
-  playground: true
+  playground: true,
 });

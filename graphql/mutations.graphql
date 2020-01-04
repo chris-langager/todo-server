@@ -1,8 +1,8 @@
 type Mutation {
   createUser(input: CreateUserInput!): CreateUserOutput!
   loginUser(input: LoginUserInput!): LoginUserOutput!
-
   loginWithGoogle(input: LoginWithGoogleInput!): LoginWithGoogleOutput!
+  logout: Boolean
 
   upsertTodos(input: UpsertTodosInput!): UpsertTodosOutput!
 }
@@ -23,7 +23,6 @@ input LoginUserInput {
 
 type LoginUserOutput {
   user: User!
-  accessToken: String!
 }
 
 input LoginWithGoogleInput {
@@ -32,7 +31,6 @@ input LoginWithGoogleInput {
 }
 type LoginWithGoogleOutput {
   user: User!
-  accessToken: String!
 }
 
 input UpsertTodosInput {
