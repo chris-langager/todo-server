@@ -1,12 +1,12 @@
 import { diff } from 'deep-object-diff';
-import { CoreFunction } from '../lib/Core';
+import { CoreFunction } from '../../lib/Core';
 import { pick } from 'lodash';
 import uuid = require('uuid');
 import { TodoCreated, TodoUpdated } from '../events';
-import { Context } from '../context';
-import Store from '../Store';
-import { fromEvents, toTodo } from '../Aggregates/todo';
-import { handleEvents } from '../eventHandler';
+import { Context } from '../../context';
+import * as Store from '../store';
+import { fromEvents, toTodo } from '../aggregate';
+import { handleEvents } from '../../eventHandler';
 
 export interface Input {
   upsertTodoInputs: UpsertTodoInput[];

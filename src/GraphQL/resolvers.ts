@@ -1,7 +1,8 @@
 import { TOKEN } from './cookies';
 import { GraphqlContext } from './context';
 import { Resolvers } from './generated/resolvers';
-import Service from '../Service';
+import TodoService from '../todo/service';
+import UserService from '../user/service';
 
 export const resolvers: Resolvers<GraphqlContext> = {
   Query: {
@@ -10,25 +11,25 @@ export const resolvers: Resolvers<GraphqlContext> = {
       if (!token) {
         return null;
       }
-      const { user } = await Service.getSelf(ctx, {});
+      const { user } = await UserService.getSelf(ctx, {});
       return user;
     },
     todos: async (_, args, ctx) => {
-      const { todos } = await Service.listTodos(ctx, {});
+      const { todos } = await TodoService.listTodos(ctx, {});
       return todos;
     },
   },
   Mutation: {
     createUser: async (_, args, ctx) => {
-      return Service.createUser(ctx, args.input);
+      return UserService.createUser(ctx, args.input);
     },
     loginUser: async (_, args, ctx) => {
-      const { user, accessToken } = await Service.loginUser(ctx, args.input);
+      const { user, accessToken } = await UserService.loginUser(ctx, args.input);
       ctx.res.cookie(TOKEN, accessToken, { maxAge: 900000, httpOnly: true });
       return { user, accessToken };
     },
     loginWithGoogle: async (_, args, ctx) => {
-      const { user, accessToken } = await Service.loginWithGoogle(ctx, args.input);
+      const { user, accessToken } = await UserService.loginWithGoogle(ctx, args.input);
       ctx.res.cookie(TOKEN, accessToken, { maxAge: 900000, httpOnly: true });
       return { user, accessToken };
     },
@@ -37,7 +38,7 @@ export const resolvers: Resolvers<GraphqlContext> = {
       return true;
     },
     upsertTodos: async (_, args, ctx) => {
-      return Service.upsertTodos(ctx, {
+      return TodoService.upsertTodos(ctx, {
         upsertTodoInputs: args.input.upsertTodoInputs,
       });
     },

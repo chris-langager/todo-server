@@ -6,9 +6,3 @@ export interface User {
 
   cursor?: string;
 }
-
-export interface Todo {
-  id: string;
-  text: string;
-  completed: boolean;
-}

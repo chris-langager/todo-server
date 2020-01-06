@@ -1,6 +1,6 @@
-import { WrapperFunction } from '../../lib/Core';
-import { Context } from '../../context';
-import { validateUserAccessToken } from '../../tokens';
+import { WrapperFunction } from '../../../lib/Core';
+import { Context } from '../../../context';
+import { validateUserAccessToken } from '../../../tokens';
 
 const whiteList = ['createUser', 'loginUser', 'loginWithGoogle'];
 

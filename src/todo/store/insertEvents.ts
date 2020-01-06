@@ -1,7 +1,7 @@
 import { Event } from '../events';
-import { db } from './db';
+import { db } from '../../postgres/db';
 import * as pgPromise from 'pg-promise';
-import { Context } from '../context';
+import { Context } from '../../context';
 const pgp = pgPromise();
 
 const columnSet = new pgp.helpers.ColumnSet(

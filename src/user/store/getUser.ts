@@ -1,4 +1,4 @@
-import { Context } from '../context';
+import { Context } from '../../context';
 import { listUsers } from './listUsers';
 
 //nice API for getting a single user wrapping our listUsers function

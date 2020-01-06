@@ -1,5 +1,5 @@
-import { db } from './db';
-import { Context } from '../context';
+import { db } from '../../postgres/db';
+import { Context } from '../../context';
 import { User } from '../types';
 
 export interface Input {
@@ -10,10 +10,7 @@ export interface Output {
   user: User | null;
 }
 
-export async function authenticateUser(
-  ctx: Context,
-  input: Input
-): Promise<Output> {
+export async function authenticateUser(ctx: Context, input: Input): Promise<Output> {
   const query = `
 SELECT * 
 FROM users 
@@ -28,9 +25,9 @@ WHERE email = lower($(email))
       ? {
           ...row,
           dateCreated: row.date_created,
-          dateUpdated: row.date_updated
+          dateUpdated: row.date_updated,
         }
-      : null
+      : null,
   };
 }
 

@@ -5,18 +5,18 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import { CONFIG } from './config';
 import { server } from './GraphQL';
-import * as Store from './Store';
+import { migrate } from './postgres/migrate';
 
 (async () => {
   logger.info({ CONFIG }, 'starting up!');
 
-  await Store.migrate();
+  await migrate();
 
   const app = express();
 
   var corsOptions = {
     origin: process.env.FRONTEND_URL,
-    credentials: true, // <-- REQUIRED backend setting
+    credentials: true,
   };
 
   app.use(cors(corsOptions));

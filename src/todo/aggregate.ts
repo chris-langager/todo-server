@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
-import { Todo } from './../types';
-import { TodoUpdated } from './../events';
-import { Event } from '../events';
+import { Todo } from './types';
+import { TodoUpdated } from './events';
+import { Event } from './events';
 import { diff } from 'deep-object-diff';
 
 export interface TodoAggregate {

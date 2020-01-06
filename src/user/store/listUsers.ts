@@ -1,8 +1,8 @@
-import { User } from './../types';
-import { db } from './db';
-import { Context } from '../context';
+import { User } from '../types';
+import { db } from '../../postgres/db';
+import { Context } from '../../context';
 import { last, first } from 'lodash';
-import { Filters, FilterMapping, buildWhereClause } from './where';
+import { Filters, FilterMapping, buildWhereClause } from '../../postgres/where';
 import { encode, decode } from './cursor';
 
 interface Row {

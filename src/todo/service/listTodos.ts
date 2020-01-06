@@ -1,8 +1,8 @@
-import { CoreFunction } from '../lib/Core';
+import { CoreFunction } from '../../lib/Core';
 import { values } from 'lodash';
-import { Context } from '../context';
-import Store from '../Store';
-import { TodoAggregate, fromEvents } from '../Aggregates/todo';
+import { Context } from '../../context';
+import * as Store from '../store';
+import { TodoAggregate, fromEvents } from '../aggregate';
 
 export interface Input {}
 

@@ -1,11 +1,11 @@
 import { createUser } from './createUser';
 import axios from 'axios';
-import { CoreFunction } from '../lib/Core';
+import { CoreFunction } from '../../lib/Core';
 import { pick } from 'lodash';
 import { User } from '../types';
-import { Context } from '../context';
-import Store from '../Store';
-import { createUserAccessToken } from '../tokens';
+import { Context } from '../../context';
+import * as Store from '../store';
+import { createUserAccessToken } from '../../tokens';
 import uuid = require('uuid');
 
 export interface Input {

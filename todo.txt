@@ -1,6 +1,7 @@
 TODO:
 - add structured errors
 - add tests
+- use bcrypt in service layer rather than postgres
 - add users->todo and todo->user in types.graphql
 - add boards (collection of Todos)
 - add expiration to userAccessToken

@@ -1,6 +1,6 @@
 import { User } from '../types';
-import { db } from './db';
-import { Context } from '../context';
+import { db } from '../../postgres/db';
+import { Context } from '../../context';
 
 export interface Input {
   user: User;
@@ -17,7 +17,7 @@ INSERT INTO users (id, date_created, date_updated ,email, password) VALUES
     ...input.user,
     date_created: input.user.dateCreated,
     date_updated: input.user.dateUpdated,
-    password: input.password
+    password: input.password,
   });
 
   return {};

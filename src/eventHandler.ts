@@ -1,6 +1,6 @@
 import { Context } from './context';
-import { Event } from './events';
-import * as Store from './Store';
+import { Event } from './todo/events';
+import * as Store from './todo/store';
 
 export interface Input {
   events: Event[];

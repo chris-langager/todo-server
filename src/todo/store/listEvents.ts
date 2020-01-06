@@ -1,8 +1,8 @@
-import { db } from './db';
+import { db } from '../../postgres/db';
+import { Filters, FilterMapping, buildWhereClause } from '../../postgres/where';
 import { Event, AggregateType } from '../events';
-import { Context } from '../context';
+import { Context } from '../../context';
 import { last, first } from 'lodash';
-import { Filters, FilterMapping, buildWhereClause } from './where';
 import { encode, decode } from './cursor';
 
 interface Row {

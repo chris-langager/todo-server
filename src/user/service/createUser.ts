@@ -1,8 +1,8 @@
-import { CoreFunction } from '../lib/Core';
+import { CoreFunction } from '../../lib/Core';
 import * as uuid from 'uuid';
 import { User } from '../types';
-import { Context } from '../context';
-import Store from '../Store';
+import { Context } from '../../context';
+import * as Store from '../store';
 
 export interface Input {
   email: string;
