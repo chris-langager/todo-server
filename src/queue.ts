@@ -11,14 +11,14 @@ select *
 from event_log
 where consumed_by & (select id from consumers where name = $1) = 0
 order by id ASC
-limit 1
+limit $2
 for update skip locked;
  `;
 
 const commit_id_query = `
 update event_log
 set consumed_by=(consumed_by::bit(16)  | (select id from consumers where name = $1)::bit(16))::integer
-where id = $2;
+where id in ($2:csv);
  `;
 
 interface Payload {
@@ -32,28 +32,44 @@ interface EventRow {
   consumed_by: number;
 }
 
-async function consume(name: string) {
-  for (let i = 0; i < 50; i++) {
+//TODO - use pg in stead of pg-promise
+//TOOD - make producer
+//TOOD - batch consumer
+//TODO - generator implementation?
+//TODO - function wrapping consumer creation
+
+interface ConsumerOptions {
+  name: string;
+  size: number;
+}
+async function consume({ name, size }) {
+  let more = true;
+  while (more) {
     await db
       .tx(async tx => {
         try {
-          const { id }: EventRow = await tx.one(get_next_even_query, name);
-          console.log(`[${name}] working on event ${id}...`);
+          const eventRows: EventRow[] = await tx.many(get_next_even_query, [name, size]);
+          const ids = eventRows.map(({ id }) => id);
+          console.log(`[${name}] working on event ${ids}...`);
           await sleep(1000);
-          console.log(`[${name}] done with event ${id}.`);
-          await tx.none(commit_id_query, [name, id]);
-          return id;
+          console.log(`[${name}] done with event ${ids}.`);
+          await tx.none(commit_id_query, [name, ids]);
+          return ids;
         } catch (err) {
           if (err instanceof QueryResultError) {
             if (err.code === pgPromise.errors.queryResultErrorCode.noData) {
+              more = false;
               return -1;
             }
           }
           throw err;
         }
       })
-      .then(id => {
-        console.log(`[${name}] ${id} was committed!`);
+      .then(ids => {
+        if (!more) {
+          return;
+        }
+        console.log(`[${name}] ${ids} were committed!`);
       })
       .catch(error => {
         console.log(error);
@@ -61,9 +77,8 @@ async function consume(name: string) {
   }
 }
 
-consume('A');
-consume('A');
-consume('A');
-consume('B');
-consume('C');
-consume('C');
+consume({ name: 'B', size: 10 });
+consume({ name: 'B', size: 10 });
+consume({ name: 'B', size: 10 });
+consume({ name: 'B', size: 10 });
+consume({ name: 'C', size: 10 });
