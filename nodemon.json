@@ -2,5 +2,5 @@
   "watch": ["src"],
   "ext": "ts",
   "ignore": ["src/**/*.spec.ts"],
-  "exec": " ts-node -r dotenv/config ./src/queue.ts | pino-pretty -i time,hostname,pid"
+  "exec": " ts-node -r dotenv/config ./src/queueWithPg.ts | pino-pretty -i time,hostname,pid"
 }
