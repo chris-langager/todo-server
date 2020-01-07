@@ -16,6 +16,28 @@ set consumed_by=(consumed_by::bit(16)  | (select id from consumers where name = 
 where id = ANY ($2);
  `;
 
+const lock_query = `
+select *
+from consumers
+where name = $1
+for update skip locked;
+`;
+
+const checkout_bookmark = `
+select *
+from bookmarks
+where consumer = $1
+order by date_returned3 asc, index asc, partition asc
+limit 1
+    for update skip locked;
+`;
+
+const return_bookmark = `
+update bookmarks
+set index = $1, date_returned3 = $2
+where consumer = $3 and partition = $4;
+`;
+
 interface Payload {
   type: string;
   to: string;
@@ -35,104 +57,130 @@ interface GetReadGeneratorInput {
 
 async function* getReadGenerator(input: GetReadGeneratorInput = {}) {
   const { consumer } = input;
-  const limit = input.limit || 200;
-  let offset = input.offset || 1;
+  // let offset = input.offset || 1;
+  let limit = input.limit || 10;
 
-  const query =
-    `
+  //   const query = `
+  // SELECT *
+  // FROM ${EVENT_TABLE}
+  // WHERE id >= $1
+  // ${consumer ? `AND consumed_by & (select id from consumers where name = $3) = 0` : ''}
+  // ORDER BY id ASC
+  // LIMIT $2
+  // ${consumer ? `FOR UPDATE SKIP LOCKED` : ''}
+  // ;`;
+  const query = `
 SELECT *
 FROM ${EVENT_TABLE}
-WHERE id >= $1
-${consumer ? `AND consumed_by & (select id from consumers where name = $3) = 0` : ''}
+WHERE id > $1
+${consumer ? `AND partition = $3` : ''}
 ORDER BY id ASC
-LIMIT $2
-${consumer ? `FOR NO KEY UPDATE SKIP LOCKED` : ''}` + ';';
+LIMIT $2;`;
 
   const client = await pool.connect();
   try {
     while (true) {
-      console.log('starting transaction....');
       await client.query('BEGIN');
 
-      console.log('querying for events...');
+      let partition = 0;
+      let offset = 0;
+      if (consumer) {
+        const { rows } = await client.query(checkout_bookmark, [consumer]);
+        if (rows.length === 0) {
+          //Consider - fire a special event indicating that there's locks already taken?
+          break;
+        }
+        partition = rows[0].partition;
+        offset = rows[0].index;
+      }
+
       const { rows: events } = await client.query<Event>(query, [
         offset,
         limit,
-        consumer,
+        partition,
       ]);
+
       if (!events || events.length === 0) {
-        console.log('breaking!');
+        if (consumer) {
+          await client.query(return_bookmark, [offset, new Date(), consumer, partition]);
+        }
+        await client.query('COMMIT');
         break;
       }
 
-      console.log('yielding events...');
       yield events;
 
       if (consumer) {
-        console.log('running commit query...');
-        await client.query(commit_id_query, [consumer, events.map(({ id }) => id)]);
+        await client.query(return_bookmark, [
+          events[events.length - 1].id,
+          new Date(),
+          consumer,
+          partition,
+        ]);
       }
 
-      console.log('committing...');
       await client.query('COMMIT');
 
       offset += events ? events.length : 0;
     }
   } catch (e) {
-    console.log(e);
-    console.log('rolling back...');
+    //note - this will not be hit if the consumer of this generator has an error,
+    //this is just for db errors within this function.
+    //the "finally" will always be called though.
     await client.query('ROLLBACK');
-    console.log('throwing!');
     throw e;
   } finally {
-    console.log('release called');
+    //this will always be called, even if the consumer of this generator has an error
     client.release();
   }
 }
 
 interface ConsumeInput {
-  consumer: string;
+  consumer?: string;
   handleEvents: (events: Event[]) => Promise<void>;
 }
-async function consume2(input: ConsumeInput) {
-  const { consumer, handleEvents } = input;
-  try {
-    //TODO: make sure consumer exists in table
 
-    const sequence = getReadGenerator({ offset: 1, consumer, limit: 5 });
+async function read(input: ConsumeInput) {
+  const { consumer, handleEvents } = input;
+  //TODO: make sure consumer exists in table
+
+  try {
+    const sequence = getReadGenerator({ consumer });
+
     for await (const events of sequence) {
       await handleEvents(events);
     }
-
-    //TODO: go into some state where this checks in for new events
-    console.log(`consumer ${consumer} is done!`);
   } catch (e) {
     console.log(e);
-    console.log(`consumer ${consumer} has crashed`);
-    throw e;
+    console.log('there was an error, restarting in a bit...');
+    await sleep(1000);
+    return read(input);
   }
+
+  console.log('nothing for me to read, restarting in a bit');
+  await sleep(1000);
+  return read(input);
 }
 
 (async () => {
   consumeTest('A');
+  consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('A');
+  // consumeTest('B');
 
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('A');
-  consumeTest('B');
+  // consumeTest('A');
 
-  consumeTest('A');
-
-  consumeTest('A');
+  // consumeTest('A');
 })();
 
 function consumeTest(consumer: string) {
-  consume2({
+  read({
     consumer,
     handleEvents: async events => {
       console.log(
@@ -140,7 +188,11 @@ function consumeTest(consumer: string) {
           events[events.length - 1].id
         }`
       );
-      await sleep(1000);
+      // await sleep(1000);
+      const random = Math.random();
+      if (random < 0.9) {
+        // throw new Error('asdf ' + random);
+      }
     },
   });
 }
