@@ -58,7 +58,7 @@ interface GetReadGeneratorInput {
 async function* getReadGenerator(input: GetReadGeneratorInput = {}) {
   const { consumer } = input;
   // let offset = input.offset || 1;
-  let limit = input.limit || 10;
+  let limit = input.limit || 200;
 
   //   const query = `
   // SELECT *
