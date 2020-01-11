@@ -5,6 +5,7 @@ import { Pool } from 'pg';
 import { CONFIG } from './config';
 
 import { BookmarkManager } from './BookmarkManager';
+import uuid = require('uuid');
 
 const connectionString = CONFIG.DATABASE_URL;
 
@@ -22,7 +23,10 @@ interface Payload {
 interface Event {
   id: number;
   payload: Payload;
-  consumed_by: number;
+}
+
+interface NewEvent {
+  payload: Payload;
 }
 
 interface ReaderOptions {
@@ -32,7 +36,7 @@ interface ReaderOptions {
   limit?: number;
 }
 
-const DEFAULT_LIMIT = 1;
+const DEFAULT_LIMIT = 100;
 
 export async function read(options: ReaderOptions) {
   const { reader, process, onProcessError } = options;
@@ -85,6 +89,25 @@ export async function read(options: ReaderOptions) {
   _read();
 }
 
+export async function write(events: NewEvent[]) {
+  const parameterPlaceholders: string[] = [];
+  //TODO: fix typing
+  const parameters: any[] = [];
+  for (let i = 1; i <= events.length; i++) {
+    parameterPlaceholders.push(`($${i}, $${i + 1})`);
+    parameters.push(events[i - 1].payload);
+    //TODO: generate partition key
+    parameters.push(1);
+  }
+
+  const query = `
+  INSERT INTO ${EVENT_TABLE} (payload, partition)
+VALUES  ${parameterPlaceholders.join(',')};
+`;
+
+  await pool.query(query, parameters);
+}
+
 const processAs = (consumer: string) => {
   return async (events: Event[]) => {
     console.log(
@@ -95,18 +118,71 @@ const processAs = (consumer: string) => {
     await sleep(1000);
     const random = Math.random();
     if (random < 0.9) {
-      throw new Error('asdf ' + random);
+      // throw new Error('asdf ' + random);
     }
   };
 };
 
 (async () => {
-  read({
-    reader: 'A',
-    process: processAs('A1'),
-    onProcessError: async (error, events) => {
-      console.log(error.stack);
-      console.log(`failed to process ${events.length} events`);
-    },
-  });
+  //   setInterval(() => {
+  //     write([
+  //       {
+  //         payload: {
+  //           to: 'asdf',
+  //           type: 'asdf',
+  //         },
+  //       },
+  //     ]);
+  //   }, 1000);
+
+  // read({
+  //   reader: 'A',
+  //   process: processAs('A1'),
+  //   onProcessError: async (error, events) => {
+  //     console.log(error.stack);
+  //     console.log(`failed to process ${events.length} events`);
+  //   },
+  // });
+
+  const ss = [
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    uuid.v4(),
+    'asdf',
+    'sadf',
+    'this is a long string with spaces',
+    'boggle',
+    'boggle',
+    'boggle',
+  ];
+  ss.forEach(s => console.log(`${s} -> ${hash(s)}`));
 })();
+
+function hash(s: string) {
+  const sumOfCharCodes = s
+    .split('')
+    .map(o => o.charCodeAt(0))
+    .reduce((a, b) => a + b, 0);
+  return (sumOfCharCodes % 9) + 1;
+}
