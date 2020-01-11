@@ -26,26 +26,27 @@ interface Event {
 }
 
 interface ReaderOptions {
-  consumer: string;
+  reader: string;
   process: (events: Event[]) => Promise<void>;
-  onProcessError?: (events: Event[]) => Promise<void>;
+  onProcessError?: (error: Error, events: Event[]) => Promise<void>;
   limit?: number;
 }
 
 const DEFAULT_LIMIT = 1;
 
-export async function Reader(options: ReaderOptions) {
-  const { consumer, process, onProcessError } = options;
+export async function read(options: ReaderOptions) {
+  const { reader, process, onProcessError } = options;
   const limit = options.limit || DEFAULT_LIMIT;
 
-  const bookmarkManager = await BookmarkManager({ consumer, connectionString });
+  const bookmarkManager = await BookmarkManager({ reader, connectionString });
 
-  async function read() {
+  async function _read() {
     const bookmark = await bookmarkManager.checkoutBookmark();
     if (!bookmark) {
-      console.log(`[${consumer}] no bookmarks left, sleeping for a bit...`);
+      console.log(`[${reader}] no bookmarks left, sleeping for a bit...`);
       await sleep(2000);
-      return read();
+      _read();
+      return;
     }
 
     let bookmarkExpired = false;
@@ -69,7 +70,7 @@ export async function Reader(options: ReaderOptions) {
       try {
         await process(events);
       } catch (e) {
-        onProcessError && (await onProcessError(events));
+        onProcessError && (await onProcessError(e, events));
         break;
       }
 
@@ -78,12 +79,10 @@ export async function Reader(options: ReaderOptions) {
     }
 
     await bookmarkManager.returnBookmark();
-    return read();
+    _read();
   }
 
-  return {
-    read,
-  };
+  _read();
 }
 
 const processAs = (consumer: string) => {
@@ -102,21 +101,12 @@ const processAs = (consumer: string) => {
 };
 
 (async () => {
-  const reader1 = await Reader({
-    consumer: 'A',
+  read({
+    reader: 'A',
     process: processAs('A1'),
-    onProcessError: async events =>
-      console.log(`failed to process ${events.length} events`),
+    onProcessError: async (error, events) => {
+      console.log(error.stack);
+      console.log(`failed to process ${events.length} events`);
+    },
   });
-  const reader2 = await Reader({
-    consumer: 'A',
-    process: processAs('A2'),
-    onProcessError: async events =>
-      console.log(`failed to process ${events.length} events`),
-  });
-
-  // const reader3 = await Reader({ consumer: 'A', process: processAs('A3') });
-  reader1.read();
-  reader2.read();
-  // reader3.read();
 })();

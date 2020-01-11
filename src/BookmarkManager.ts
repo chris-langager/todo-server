@@ -1,29 +1,29 @@
 import { Client } from 'pg';
 
 interface Bookmark {
-  consumer: string;
+  reader: string;
   partition: number;
   index: number;
 }
 
 interface BookmarkManagerOptions {
   connectionString: string;
-  consumer: string;
+  reader: string;
 }
 export async function BookmarkManager(options: BookmarkManagerOptions) {
-  const { connectionString, consumer } = options;
+  const { connectionString, reader } = options;
   const client = new Client({ connectionString });
   await client.connect();
 
   return {
-    checkoutBookmark: () => checkoutBookmark(client, consumer),
+    checkoutBookmark: () => checkoutBookmark(client, reader),
     updateBookmark: (partition: number, index: number) =>
-      updateBookmark(client, consumer, partition, index),
+      updateBookmark(client, reader, partition, index),
     returnBookmark: () => returnBookmark(client),
   };
 }
 
-async function checkoutBookmark(client: Client, consumer: string): Promise<Bookmark> {
+async function checkoutBookmark(client: Client, reader: string): Promise<Bookmark> {
   client.query('BEGIN;');
 
   const query = `
@@ -35,12 +35,12 @@ limit 1
     for update skip locked;
 `;
 
-  const { rows } = await client.query(query, [consumer]);
+  const { rows } = await client.query(query, [reader]);
   if (rows.length === 0) {
     return null;
   }
   return {
-    consumer,
+    reader,
     partition: rows[0].partition,
     index: rows[0].index,
   };
@@ -48,7 +48,7 @@ limit 1
 
 async function updateBookmark(
   client: Client,
-  consumer: string,
+  reader: string,
   partition: number,
   index: number
 ) {
@@ -58,7 +58,7 @@ set index=$1
 where consumer = $2 and partition = $3;
 `;
 
-  await client.query(query, [index, consumer, partition]);
+  await client.query(query, [index, reader, partition]);
 }
 
 async function returnBookmark(client: Client) {
