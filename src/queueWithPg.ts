@@ -165,9 +165,9 @@ async function read(input: ConsumeInput) {
 (async () => {
   consumeTest('A');
   consumeTest('A');
-  // consumeTest('A');
-  // consumeTest('A');
-  // consumeTest('A');
+  consumeTest('A');
+  consumeTest('A');
+  consumeTest('A');
   // consumeTest('A');
   // consumeTest('A');
   // consumeTest('A');

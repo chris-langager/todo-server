@@ -28,13 +28,14 @@ interface Event {
 interface ReaderOptions {
   consumer: string;
   process: (events: Event[]) => Promise<void>;
+  onProcessError?: (events: Event[]) => Promise<void>;
   limit?: number;
 }
 
 const DEFAULT_LIMIT = 1;
 
 export async function Reader(options: ReaderOptions) {
-  const { consumer, process } = options;
+  const { consumer, process, onProcessError } = options;
   const limit = options.limit || DEFAULT_LIMIT;
 
   const bookmarkManager = await BookmarkManager({ consumer, connectionString });
@@ -65,7 +66,12 @@ export async function Reader(options: ReaderOptions) {
 
       const { rows: events } = await pool.query<Event>(query, [index, partition, limit]);
 
-      await process(events);
+      try {
+        await process(events);
+      } catch (e) {
+        onProcessError && (await onProcessError(events));
+        break;
+      }
 
       index = events[events.length - 1].id;
       await bookmarkManager.updateBookmark(partition, index);
@@ -90,12 +96,27 @@ const processAs = (consumer: string) => {
     await sleep(1000);
     const random = Math.random();
     if (random < 0.9) {
-      // throw new Error('asdf ' + random);
+      throw new Error('asdf ' + random);
     }
   };
 };
 
 (async () => {
-  const reader = await Reader({ consumer: 'A', process: processAs('A') });
-  reader.read();
+  const reader1 = await Reader({
+    consumer: 'A',
+    process: processAs('A1'),
+    onProcessError: async events =>
+      console.log(`failed to process ${events.length} events`),
+  });
+  const reader2 = await Reader({
+    consumer: 'A',
+    process: processAs('A2'),
+    onProcessError: async events =>
+      console.log(`failed to process ${events.length} events`),
+  });
+
+  // const reader3 = await Reader({ consumer: 'A', process: processAs('A3') });
+  reader1.read();
+  reader2.read();
+  // reader3.read();
 })();
